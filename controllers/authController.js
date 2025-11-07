@@ -44,7 +44,7 @@ exports.signupStepOne = (req, res) => {
         await sendOtpEmail(email, otp);
         res.status(200).json({ message: "OTP sent to email." });
       } catch (error) {
-        res.status(500).json({ error: "Failed to send OTP email 1123." });
+        res.status(500).json({ error: "Failed to send OTP email." });
       }
     });
   });
