@@ -37,7 +37,7 @@ exports.signupStepOne = (req, res) => {
 
     // ✅ Step 3: Save OTP
     Otp.saveOtp(email, otp, async (err) => {
-      if (err) return res.status(500).json({ error: err });
+      if (err) return res.status(500).json({ error: "error" });
 
       try {
         // ✅ Step 4: Send OTP email
