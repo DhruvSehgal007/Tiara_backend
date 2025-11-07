@@ -4,15 +4,15 @@ require("dotenv").config();
 console.log("✅ Setting up SMTP transporter...");
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
-  },
-  tls: {
-    rejectUnauthorized: false
   }
 });
+
 
 // ✅ Verify transporter (Important for live server)
 transporter.verify((error, success) => {
