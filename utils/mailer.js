@@ -1,6 +1,8 @@
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 
+console.log("✅ Setting up SMTP transporter...");
+
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -8,11 +10,22 @@ const transporter = nodemailer.createTransport({
     pass: process.env.EMAIL_PASS
   },
   tls: {
-    rejectUnauthorized: false // ✅ Fix self-signed certificate issue
+    rejectUnauthorized: false
   }
 });
 
-exports.sendOtpEmail = (to, otp) => {
+// ✅ Verify transporter (Important for live server)
+transporter.verify((error, success) => {
+  if (error) {
+    console.log("❌ SMTP Transporter Error:", error);
+  } else {
+    console.log("✅ SMTP Transporter is ready.");
+  }
+});
+
+exports.sendOtpEmail = async (to, otp) => {
+  console.log("📨 Preparing OTP email to:", to);
+
   const mailOptions = {
     from: process.env.EMAIL_USER,
     to,
@@ -20,5 +33,12 @@ exports.sendOtpEmail = (to, otp) => {
     text: `Your OTP code is: ${otp}`
   };
 
-  return transporter.sendMail(mailOptions);
+  try {
+    const result = await transporter.sendMail(mailOptions);
+    console.log("✅ Mail sent:", result);
+    return result;
+  } catch (error) {
+    console.log("❌ sendMail failed:", error);
+    throw error;
+  }
 };

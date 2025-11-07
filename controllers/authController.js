@@ -21,34 +21,48 @@ function createUserIfNotExists(name, email, callback) {
   });
 }
 
-exports.signupStepOne = (req, res) => {
+exports.signupStepOne = async (req, res) => {
+  console.log("✅ signupStepOne triggered");
+  console.log("📩 Received Body:", req.body);
+
   const { name, email } = req.body;
 
   if (!name || !email) {
+    console.log("❌ Missing name or email");
     return res.status(400).json({ message: "Name and email are required." });
   }
 
-  // ✅ Step 1: Insert user if not exist
+  console.log("✅ Step 1: Creating user if not exists...");
   createUserIfNotExists(name, email, (err) => {
-    if (err) return res.status(500).json({ error: err });
+    if (err) {
+      console.log("❌ Error in createUserIfNotExists:", err);
+      return res.status(500).json({ error: err });
+    }
 
-    // ✅ Step 2: Generate OTP
     const otp = Math.floor(100000 + Math.random() * 900000);
+    console.log("✅ Step 2: OTP Generated:", otp);
 
-    // ✅ Step 3: Save OTP
+    console.log("✅ Step 3: Saving OTP in DB...");
     Otp.saveOtp(email, otp, async (err) => {
-      if (err) return res.status(500).json({ error: "error" });
+      if (err) {
+        console.log("❌ Otp.saveOtp error:", err);
+        return res.status(500).json({ error: "OTP save error" });
+      }
 
       try {
-        // ✅ Step 4: Send OTP email
+        console.log("✅ Step 4: Sending OTP Email...");
         await sendOtpEmail(email, otp);
+        console.log("✅ OTP email sent successfully to:", email);
+
         res.status(200).json({ message: "OTP sent to email." });
       } catch (error) {
+        console.log("❌ Error sending OTP email:", error);
         res.status(500).json({ error: "Failed to send OTP email." });
       }
     });
   });
 };
+
 
 exports.setPasswordAfterVerification = (req, res) => {
   const { email, otp, password } = req.body;
