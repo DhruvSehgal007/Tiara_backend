@@ -1,8 +1,13 @@
 const db = require("../config/db");
 
+// exports.findUserByEmail = (email, cb) => {
+//   db.query("SELECT * FROM users WHERE name = ?", [email], cb);
+// };
+
 exports.findUserByEmail = (email, cb) => {
-  db.query("SELECT * FROM users WHERE name = ?", [email], cb);
+  db.query("SELECT * FROM users WHERE email = ?", [email], cb);
 };
+
 
 exports.createUser = (userData, cb) => {
   db.query("INSERT INTO users SET ?", userData, cb);
