@@ -234,7 +234,7 @@ exports.saveDeviceRoomMapping = (req, res) => {
   const sql =
     "INSERT INTO device_mappings (user_email, bluetooth_device_name, room_name) VALUES (?, ?, ?)";
 
-  db.query(sql, [user_email, bluetooth_device_name, room_name], (err, result) => {
+  db.query(sql, [email, bluetooth_device_name, room_name], (err, result) => {
     if (err) {
       console.error("❌ Error saving mapping:", err);
       return res.status(500).json({ message: "Database error" });
