@@ -63,7 +63,6 @@
 //   });
 // };
 
-
 // exports.setPasswordAfterVerification = (req, res) => {
 //   const { email, otp, password } = req.body;
 //   Otp.getLatestOtp(email, (err, results) => {
@@ -108,7 +107,6 @@
 //     res.json({ message: "Login successful", token });
 //   });
 // };
-
 
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -194,6 +192,33 @@ exports.setPasswordAfterVerification = (req, res) => {
 /* -------------------------------
    Step 3: Login
 --------------------------------- */
+// exports.login = (req, res) => {
+//   const { name, password } = req.body;
+
+//   User.findUserByEmail(name, (err, result) => {
+//     if (err || result.length === 0) {
+//       return res.status(400).json({ message: "Invalid email or password" });
+//     }
+
+//     const user = result[0];
+
+//     if (!user.password || user.is_verified === 0) {
+//       return res.status(401).json({ message: "Please verify your email first" });
+//     }
+
+//     const isMatch = bcrypt.compareSync(password, user.password);
+//     if (!isMatch) {
+//       return res.status(400).json({ message: "Invalid email or password" });
+//     }
+
+//     const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, {
+//       expiresIn: "1h",
+//     });
+
+//     res.json({ message: "Login successful", token });
+//   });
+// };
+
 exports.login = (req, res) => {
   const { name, password } = req.body;
 
@@ -205,7 +230,9 @@ exports.login = (req, res) => {
     const user = result[0];
 
     if (!user.password || user.is_verified === 0) {
-      return res.status(401).json({ message: "Please verify your email first" });
+      return res
+        .status(401)
+        .json({ message: "Please verify your email first" });
     }
 
     const isMatch = bcrypt.compareSync(password, user.password);
@@ -213,21 +240,53 @@ exports.login = (req, res) => {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    // ✅ Save user email in session
+    req.session.user_email = user.email;
 
-    res.json({ message: "Login successful", token });
+    // ✅ Generate JWT
+    const token = jwt.sign(
+      { id: user.id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    res.json({
+      message: "Login successful",
+      token,
+      user_email: user.email, // also send to frontend if needed
+    });
   });
 };
 
 /* -------------------------------
    Step 4: Save Device ↔ Room Mapping
 --------------------------------- */
-exports.saveDeviceRoomMapping = (req, res) => {
-  const { email, bluetooth_device_name, room_name } = req.body;
+// exports.saveDeviceRoomMapping = (req, res) => {
+//   const { email, bluetooth_device_name, room_name } = req.body;
 
-    console.log("📥 Incoming data:", req.body);
+//   if (!email || !bluetooth_device_name || !room_name) {
+//     return res.status(400).json({ message: "Missing required fields" });
+//   }
+
+//   const sql =
+//     "INSERT INTO device_mappings (user_email, bluetooth_device_name, room_name) VALUES (?, ?, ?)";
+
+//   db.query(sql, [email, bluetooth_device_name, room_name], (err, result) => {
+//     if (err) {
+//       console.error("❌ Error saving mapping:", err);
+//       return res.status(500).json({ message: "Database error" });
+//     }
+
+//     res.json({ message: "✅ Mapping saved successfully" });
+//   });
+// };
+
+exports.saveDeviceRoomMapping = (req, res) => {
+  // ✅ Automatically use session email if available
+  const email = req.session.user_email;
+  const { bluetooth_device_name, room_name } = req.body;
+
+  console.log("📥 Incoming data:", { email, bluetooth_device_name, room_name });
 
   if (!email || !bluetooth_device_name || !room_name) {
     return res.status(400).json({ message: "Missing required fields" });
@@ -256,12 +315,16 @@ exports.getDeviceMappings = (req, res) => {
     return res.status(400).json({ message: "Email required" });
   }
 
-  db.query("SELECT * FROM device_mappings WHERE user_email = ?", [email], (err, results) => {
-    if (err) {
-      console.error("❌ Error fetching mappings:", err);
-      return res.status(500).json({ message: "Database error" });
-    }
+  db.query(
+    "SELECT * FROM device_mappings WHERE user_email = ?",
+    [email],
+    (err, results) => {
+      if (err) {
+        console.error("❌ Error fetching mappings:", err);
+        return res.status(500).json({ message: "Database error" });
+      }
 
-    res.json({ mappings: results });
-  });
+      res.json({ mappings: results });
+    }
+  );
 };
