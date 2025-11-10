@@ -227,11 +227,11 @@ exports.login = (req, res) => {
 exports.saveDeviceRoomMapping = (req, res) => {
   const { email, bluetooth_device_name, room_name } = req.body;
 
+    console.log("📥 Incoming data:", req.body);
+
   if (!email || !bluetooth_device_name || !room_name) {
     return res.status(400).json({ message: "Missing required fields" });
   }
-
-  console.log("📥 Incoming data:", req.body);
 
   const sql =
     "INSERT INTO device_mappings (user_email, bluetooth_device_name, room_name) VALUES (?, ?, ?)";
