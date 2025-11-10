@@ -14,7 +14,7 @@ const app = express();
 
 const cors = require('cors');
 const allowedOrigins = [
-  "https://localhost",
+  "https://localhost/8100",
   "http://localhost:8100", // Ionic dev server
   "https://staging.ekarigar.com"
 ];
@@ -34,18 +34,11 @@ app.use(cors({
 // explicitly handle OPTIONS preflight
 app.options("*", cors());
 
-// ✅ Handle preflight OPTIONS requests globally
-app.options("*", cors());
-
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/api/", authRoutes);
 
-
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 app.use(session({
   secret: process.env.SESSION_SECRET,
@@ -53,3 +46,9 @@ app.use(session({
   saveUninitialized: true,
   cookie: { secure: false } // secure:true when using HTTPS
 }));
+
+app.use("/api/", authRoutes);
+
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
