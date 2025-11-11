@@ -1,22 +1,25 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
-const session = require('express-session');
+const session = require("express-session");
 const authRoutes = require("./routes/authRoutes");
 
 dotenv.config();
 const app = express();
 
-// Allowed origins
+// Allowed origins (you can add more as needed)
 const allowedOrigins = [
-  "http://localhost:8100", // Ionic dev server
+  "http://localhost:8100",
+  "http://127.0.0.1:8100",
+  "capacitor://localhost",   // for Ionic mobile apps
   "https://staging.ekarigar.com"
 ];
 
 app.use(cors({
-  origin: function(origin, callback) {
-    if (!origin) return callback(null, true); // Postman, curl
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true); // allow Postman/curl
     if (allowedOrigins.includes(origin)) return callback(null, true);
+    console.error("CORS blocked origin:", origin);
     return callback(new Error("CORS not allowed for this origin: " + origin));
   },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -26,16 +29,16 @@ app.use(cors({
 
 app.options("*", cors());
 
-// Parse JSON and URL-encoded bodies
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Session middleware
+// Session setup
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false }
+  cookie: { secure: false } // change to true if HTTPS only
 }));
 
 // Routes
