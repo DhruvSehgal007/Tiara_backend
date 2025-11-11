@@ -7,47 +7,32 @@ const authRoutes = require("./routes/authRoutes");
 dotenv.config();
 const app = express();
 
-// ✅ Updated allowed origins
-const allowedOrigins = [
-  "http://localhost:8100",
-  "http://127.0.0.1:8100",
-  "https://localhost",         // <-- add this
-  "capacitor://localhost",
-  "https://staging.ekarigar.com"
-];
-app.use((req, res, next) => {
-  console.log("➡️  Incoming:", req.method, req.url, "Origin:", req.headers.origin);
-  next();
-});
-// ✅ CORS setup (keep this BEFORE routes)
+// ✅ Allow all origins
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
-    console.error("❌ CORS blocked origin:", origin);
-    return callback(new Error("CORS not allowed for this origin: " + origin));
-  },
+  origin: true,             // Reflects the request origin (like '*', but allows credentials)
+  credentials: true,        // Allows cookies/sessions if needed
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
-// ✅ Preflight support
+// ✅ Handle preflight
 app.options("*", cors());
 
-// Middleware
+// ✅ Parse request bodies
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// ✅ Session (optional)
 app.use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: process.env.SESSION_SECRET || "default_secret",
   resave: false,
   saveUninitialized: true,
   cookie: { secure: false }
 }));
 
-// Routes (after CORS)
+// ✅ Routes
 app.use("/api", authRoutes);
 
+// ✅ Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
