@@ -15,7 +15,10 @@ const allowedOrigins = [
   "capacitor://localhost",
   "https://staging.ekarigar.com"
 ];
-
+app.use((req, res, next) => {
+  console.log("➡️  Incoming:", req.method, req.url, "Origin:", req.headers.origin);
+  next();
+});
 // ✅ CORS setup (keep this BEFORE routes)
 app.use(cors({
   origin: function (origin, callback) {
