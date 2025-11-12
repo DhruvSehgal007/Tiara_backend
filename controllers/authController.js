@@ -194,17 +194,54 @@ exports.setPasswordAfterVerification = (req, res) => {
 /* -------------------------------
    Step 3: Login
 --------------------------------- */
-exports.login = (req, res) => {
-  const { name, password } = req.body;
+// exports.login = (req, res) => {
+//   // const { name, password } = req.body;
+//     const { name, password } = req.body;
 
-  User.findUserByEmail(name, (err, result) => {
-    if (err || result.length === 0) {
+
+//   User.findUserByEmail(name, (err, result) => {
+//     if (err || result.length === 0) {
+//       return res.status(400).json({ message: "Invalid email or password" });
+//     }
+
+//     const user = result[0];
+
+//     if (!user.password || user.is_verified === 0) {
+//       return res.status(401).json({ message: "Please verify your email first" });
+//     }
+
+//     const isMatch = bcrypt.compareSync(password, user.password);
+//     if (!isMatch) {
+//       return res.status(400).json({ message: "Invalid email or password" });
+//     }
+
+//     const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, {
+//       expiresIn: "1h",
+//     });
+
+//     res.json({ message: "Login successful", token });
+//   });
+// };
+exports.login = (req, res) => {
+  const { email, password } = req.body; // ✅ correct: use email, not name
+
+  User.findUserByEmail(email, (err, result) => {
+    if (err) {
+      console.error("Database error:", err);
+      return res.status(500).json({ message: "Server error. Please try again." });
+    }
+
+    if (result.length === 0) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
     const user = result[0];
 
-    if (!user.password || user.is_verified === 0) {
+    if (!user.password) {
+      return res.status(400).json({ message: "User has no password set" });
+    }
+
+    if (user.is_verified === 0) {
       return res.status(401).json({ message: "Please verify your email first" });
     }
 
@@ -213,11 +250,17 @@ exports.login = (req, res) => {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      { id: user.id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
 
-    res.json({ message: "Login successful", token });
+    res.json({
+      message: "Login successful",
+      token,
+      email: user.email,
+    });
   });
 };
 
