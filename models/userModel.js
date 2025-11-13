@@ -17,17 +17,47 @@ exports.setPasswordAndVerify = (email, hashedPassword, cb) => {
   db.query("UPDATE users SET password = ?, is_verified = 1 WHERE email = ?", [hashedPassword, email], cb);
 };
 
-exports.saveDeviceRoomMapping = (email, bluetooth_device_name, room_name, callback) => {
-  const sql = `
-    INSERT INTO device_mappings (user_email, bluetooth_device_name, room_name)
-    VALUES (?, ?, ?)
-  `;
+// exports.saveDeviceRoomMapping = (email, bluetooth_device_name, room_name, callback) => {
+//   const sql = `
+//     INSERT INTO device_mappings (user_email, bluetooth_device_name, room_name)
+//     VALUES (?, ?, ?)
+//   `;
 
-  db.query(sql, [email, bluetooth_device_name, room_name], (err, result) => {
+//   db.query(sql, [email, bluetooth_device_name, room_name], (err, result) => {
+//     if (err) {
+//       console.error('❌ Error saving mapping:', err);
+//       return callback(err, null);
+//     }
+//     callback(null, result);
+//   });
+// };
+exports.saveDeviceRoomMapping = (email, bluetooth_device_name, room_name, callback) => {
+  // Step 1: Get user_id from users table by email
+  const findUserSql = "SELECT id FROM users WHERE email = ?";
+  db.query(findUserSql, [email], (err, userResult) => {
     if (err) {
-      console.error('❌ Error saving mapping:', err);
+      console.error("❌ Error finding user ID:", err);
       return callback(err, null);
     }
-    callback(null, result);
+
+    if (userResult.length === 0) {
+      return callback(new Error("User not found"), null);
+    }
+
+    const user_id = userResult[0].id;
+
+    // Step 2: Insert mapping with user_id
+    const insertSql = `
+      INSERT INTO device_mappings (user_id, user_email, bluetooth_device_name, room_name)
+      VALUES (?, ?, ?, ?)
+    `;
+
+    db.query(insertSql, [user_id, email, bluetooth_device_name, room_name], (err, result) => {
+      if (err) {
+        console.error("❌ Error saving mapping:", err);
+        return callback(err, null);
+      }
+      callback(null, result);
+    });
   });
 };

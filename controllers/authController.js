@@ -157,40 +157,39 @@ exports.login = (req, res) => {
 /* -------------------------------
    Step 4: Save Device ↔ Room Mapping
 --------------------------------- */
+
 // exports.saveDeviceRoomMapping = (req, res) => {
 //   const { email, bluetooth_device_name, room_name } = req.body;
 
 //   if (!email || !bluetooth_device_name || !room_name) {
-//     return res.status(400).json({ message: "Missing required fields" });
+//     return res.status(400).json({ message: 'Missing required fields' });
 //   }
 
-//   const sql =
-//     "INSERT INTO device_mappings (user_email, bluetooth_device_name, room_name) VALUES (?, ?, ?)";
-
-//   db.query(sql, [email, bluetooth_device_name, room_name], (err, result) => {
+//   User.saveDeviceRoomMapping(email, bluetooth_device_name, room_name, (err, result) => {
 //     if (err) {
-//       console.error("❌ Error saving mapping:", err);
-//       return res.status(500).json({ message: "Database error" });
+//       return res.status(500).json({ message: 'Database error' });
 //     }
 
-//     res.json({ message: "✅ Mapping saved successfully" });
+//     res.json({ message: '✅ Mapping saved successfully', data: result });
 //   });
 // };
 exports.saveDeviceRoomMapping = (req, res) => {
   const { email, bluetooth_device_name, room_name } = req.body;
 
   if (!email || !bluetooth_device_name || !room_name) {
-    return res.status(400).json({ message: 'Missing required fields' });
+    return res.status(400).json({ message: "Missing required fields" });
   }
 
   User.saveDeviceRoomMapping(email, bluetooth_device_name, room_name, (err, result) => {
     if (err) {
-      return res.status(500).json({ message: 'Database error' });
+      console.error("❌ Error in controller:", err);
+      return res.status(500).json({ message: err.message || "Database error" });
     }
 
-    res.json({ message: '✅ Mapping saved successfully', data: result });
+    res.json({ message: "✅ Mapping saved successfully", data: result });
   });
 };
+
 /* -------------------------------
    Step 5: Get All Mappings by Email
 --------------------------------- */
