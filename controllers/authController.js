@@ -194,45 +194,64 @@ exports.saveDeviceRoomMapping = (req, res) => {
 /* -------------------------------
    Step 5: Get All Mappings by Email
 --------------------------------- */
-exports.getDeviceMappings = (req, res) => {
-  const { email } = req.query;
+// exports.getDeviceMappings = (req, res) => {
+//   const { email } = req.query;
 
-  if (!email) {
-    return res.status(400).json({ message: "Email required" });
-  }
+//   if (!email) {
+//     return res.status(400).json({ message: "Email required" });
+//   }
 
-  db.query("SELECT * FROM device_mappings WHERE user_email = ?", [email], (err, results) => {
-    if (err) {
-      console.error("❌ Error fetching mappings:", err);
-      return res.status(500).json({ message: "Database error" });
-    }
+//   db.query("SELECT * FROM device_mappings WHERE user_email = ?", [email], (err, results) => {
+//     if (err) {
+//       console.error("❌ Error fetching mappings:", err);
+//       return res.status(500).json({ message: "Database error" });
+//     }
 
-    res.json({ mappings: results });
-  });
-};
-
-
+//     res.json({ mappings: results });
+//   });
+// };
 
 
 
-exports.getUserDeviceMappings = (email, callback) => {
-  const sql = `
-    SELECT user_id, user_email, bluetooth_device_name, room_name, created_at
-    FROM device_mappings
-    WHERE user_email = ?
-  `;
-
-  db.query(sql, [email], (err, result) => {
-    if (err) {
-      console.error("❌ Error fetching mappings:", err);
-      return callback(err, null);
-    }
-    callback(null, result);
-  });
-};
 
 
+// // exports.getUserDeviceMappings = (email, callback) => {
+// //   const sql = `
+// //     SELECT user_id, user_email, bluetooth_device_name, room_name, created_at
+// //     FROM device_mappings
+// //     WHERE user_email = ?
+// //   `;
 
+// //   db.query(sql, [email], (err, result) => {
+// //     if (err) {
+// //       console.error("❌ Error fetching mappings:", err);
+// //       return callback(err, null);
+// //     }
+// //     callback(null, result);
+// //   });
+// // };
+
+
+
+
+// exports.getDeviceMappings = (req, res) => {
+//   const { email } = req.query;
+
+//   if (!email) {
+//     return res.status(400).json({ message: "Email is required" });
+//   }
+
+//   User.getUserDeviceMappings(email, (err, result) => {
+//     if (err) {
+//       return res.status(500).json({ message: "Database error" });
+//     }
+
+//     res.json({
+//       message: "✅ Device mappings fetched",
+//       data: result,
+//     });
+//   });
+// };
 
 exports.getDeviceMappings = (req, res) => {
   const { email } = req.query;
@@ -252,3 +271,4 @@ exports.getDeviceMappings = (req, res) => {
     });
   });
 };
+

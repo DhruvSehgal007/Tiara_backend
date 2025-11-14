@@ -64,9 +64,29 @@ exports.saveDeviceRoomMapping = (email, bluetooth_device_name, room_name, callba
 
 
 
+// exports.getUserDeviceMappings = (email, callback) => {
+//   const sql = `
+//     SELECT user_id, user_email, bluetooth_device_name, room_name, created_at
+//     FROM device_mappings
+//     WHERE user_email = ?
+//   `;
+
+//   db.query(sql, [email], (err, result) => {
+//     if (err) {
+//       console.error("❌ Error fetching mappings:", err);
+//       return callback(err, null);
+//     }
+//     callback(null, result);
+//   });
+// };
 exports.getUserDeviceMappings = (email, callback) => {
   const sql = `
-    SELECT user_id, user_email, bluetooth_device_name, room_name, created_at
+    SELECT 
+      user_id, 
+      user_email, 
+      bluetooth_device_name, 
+      room_name, 
+      created_at
     FROM device_mappings
     WHERE user_email = ?
   `;
@@ -79,3 +99,4 @@ exports.getUserDeviceMappings = (email, callback) => {
     callback(null, result);
   });
 };
+
