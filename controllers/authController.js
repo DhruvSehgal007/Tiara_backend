@@ -173,6 +173,7 @@ exports.login = (req, res) => {
 //     res.json({ message: '✅ Mapping saved successfully', data: result });
 //   });
 // };
+
 exports.saveDeviceRoomMapping = (req, res) => {
   const { email, bluetooth_device_name, room_name } = req.body;
 
@@ -182,11 +183,11 @@ exports.saveDeviceRoomMapping = (req, res) => {
 
   User.saveDeviceRoomMapping(email, bluetooth_device_name, room_name, (err, result) => {
     if (err) {
-      console.error("❌ Error in controller:", err);
+      console.error("Error in controller:", err);
       return res.status(500).json({ message: err.message || "Database error" });
     }
 
-    res.json({ message: "✅ Mapping saved successfully", data: result });
+    res.json({ message: "Mapping saved successfully", data: result });
   });
 };
 
@@ -207,5 +208,47 @@ exports.getDeviceMappings = (req, res) => {
     }
 
     res.json({ mappings: results });
+  });
+};
+
+
+
+
+
+exports.getUserDeviceMappings = (email, callback) => {
+  const sql = `
+    SELECT user_id, user_email, bluetooth_device_name, room_name, created_at
+    FROM device_mappings
+    WHERE user_email = ?
+  `;
+
+  db.query(sql, [email], (err, result) => {
+    if (err) {
+      console.error("❌ Error fetching mappings:", err);
+      return callback(err, null);
+    }
+    callback(null, result);
+  });
+};
+
+
+
+
+exports.getDeviceMappings = (req, res) => {
+  const { email } = req.query;
+
+  if (!email) {
+    return res.status(400).json({ message: "Email is required" });
+  }
+
+  User.getUserDeviceMappings(email, (err, result) => {
+    if (err) {
+      return res.status(500).json({ message: "Database error" });
+    }
+
+    res.json({
+      message: "✅ Device mappings fetched",
+      data: result,
+    });
   });
 };
