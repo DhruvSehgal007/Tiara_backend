@@ -113,7 +113,7 @@ exports.setPasswordAfterVerification = (req, res) => {
 //   });
 // };
 exports.login = (req, res) => {
-  const { email, password } = req.body; // ✅ correct: use email, not name
+  const { email, password } = req.body; // ✅ correct: use email, not name hello
 
   User.findUserByEmail(email, (err, result) => {
     if (err) {
