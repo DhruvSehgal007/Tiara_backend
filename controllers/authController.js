@@ -380,4 +380,21 @@ exports.getModes = (req, res) => {
 
 
 
+exports.toggleMode = (req, res) => {
+  const { id, user_id, bluetooth_name } = req.body;
+
+  if (!id || !user_id || !bluetooth_name) {
+    return res.status(400).json({ message: "Missing fields" });
+  }
+
+  // Make this mode active, others inactive
+  ModeModel.toggleMode(id, user_id, bluetooth_name, (err) => {
+    if (err) return res.status(500).json({ message: "DB Error", err });
+    res.json({ message: "Mode toggled" });
+  });
+};
+
+
+
+
 

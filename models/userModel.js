@@ -209,3 +209,28 @@ exports.getModes = (user_id, bluetooth_name, callback) => {
   db.query(sql, [user_id, bluetooth_name], callback);
 };
 
+
+exports.toggleMode = (id, user_id, bluetooth_name, callback) => {
+
+  // Step 1: Deactivate all modes for this device
+  const sql1 = `
+    UPDATE mode_lists 
+    SET is_active = 0 
+    WHERE user_id = ? AND bluetooth_device_name = ?
+  `;
+
+  // Step 2: Activate selected mode
+  const sql2 = `
+    UPDATE mode_lists 
+    SET is_active = 1 
+    WHERE id = ? AND user_id = ? AND bluetooth_device_name = ?
+  `;
+
+  db.query(sql1, [user_id, bluetooth_name], (err) => {
+    if (err) return callback(err);
+
+    db.query(sql2, [id, user_id, bluetooth_name], callback);
+  });
+};
+
+
