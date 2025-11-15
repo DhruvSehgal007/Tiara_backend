@@ -247,7 +247,7 @@ exports.saveDeviceRoomMapping = (req, res) => {
 //     }
 
 //     res.json({
-//       message: "✅ Device mappings fetched",
+//       message: "✅ Device mappings fetched", again change
 //       data: result,
 //     });
 //   });
