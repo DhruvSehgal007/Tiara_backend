@@ -272,3 +272,80 @@ exports.getDeviceMappings = (req, res) => {
   });
 };
 
+
+
+
+
+
+// exports.saveMode = (req, res) => {
+//   const { user_id, bluetooth_name, start_time, end_time, run_time, stop_time, days, total_hours } = req.body;
+
+//   if (!user_id || !bluetooth_name) {
+//     return res.status(400).json({ message: "Missing fields" });
+//   }
+
+//   ModeModel.saveMode(
+//     user_id,
+//     bluetooth_name,
+//     start_time,
+//     end_time,
+//     run_time,
+//     stop_time,
+//     days,
+//     total_hours,
+//     (err, result) => {
+//       if (err) return res.status(500).json({ message: "Database error" });
+
+//       res.json({ message: "Mode saved successfully", mode_id: result.insertId });
+//     }
+//   );
+// };
+
+// exports.getModes = (req, res) => {
+//   const { user_id, bluetooth_name } = req.query;
+
+//   ModeModel.getModes(user_id, bluetooth_name, (err, results) => {
+//     if (err) return res.status(500).json({ message: "DB Error" });
+//     res.json({ modes: results });
+//   });
+// };
+
+exports.saveMode = (req, res) => {
+  const { mode_id, user_id, bluetooth_name, start_time, end_time, run_time, stop_time, days, total_hours } = req.body;
+
+  if (!user_id || !bluetooth_name) {
+    return res.status(400).json({ message: "Missing fields" });
+  }
+
+  if (mode_id) {
+    // UPDATE
+    ModeModel.updateMode(
+      mode_id, start_time, end_time, run_time, stop_time, days, total_hours,
+      (err) => {
+        if (err) return res.status(500).json({ message: "DB Error" });
+        res.json({ message: "Mode updated" });
+      }
+    );
+
+  } else {
+    // INSERT
+    ModeModel.saveMode(
+      user_id, bluetooth_name, start_time, end_time, run_time, stop_time, days, total_hours,
+      (err, result) => {
+        if (err) return res.status(500).json({ message: "DB Error" });
+        res.json({ message: "Mode saved", id: result.insertId });
+      }
+    );
+  }
+};
+
+exports.getModes = (req, res) => {
+  const { user_id, bluetooth_name } = req.query;
+
+  ModeModel.getModes(user_id, bluetooth_name, (err, results) => {
+    if (err) return res.status(500).json({ message: "DB Error" });
+    res.json({ modes: results });
+  });
+};
+
+

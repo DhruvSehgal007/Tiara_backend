@@ -18,5 +18,7 @@ router.post("/verify", authController.setPasswordAfterVerification);
 router.post("/login", authController.login);
 router.post("/save-mapping", authController.saveDeviceRoomMapping);
 router.get("/get-mappings", authController.getDeviceMappings);
+router.post('/save-mode', authController.saveMode);
+router.get('/get-modes', authController.getModes);
 
 module.exports = router;
