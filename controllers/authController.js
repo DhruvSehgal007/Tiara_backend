@@ -317,27 +317,42 @@ exports.saveMode = (req, res) => {
     return res.status(400).json({ message: "Missing fields" });
   }
 
+  // Convert numeric hours (e.g., 4) into TIME format (04:00:00)
+  const start_time_sql = `${String(start_time).padStart(2, '0')}:00:00`;
+  const end_time_sql = `${String(end_time).padStart(2, '0')}:00:00`;
+
   if (mode_id) {
-    // UPDATE
     ModeModel.updateMode(
-      mode_id, start_time, end_time, run_time, stop_time, days, total_hours,
+      mode_id,
+      start_time_sql,
+      end_time_sql,
+      run_time,
+      stop_time,
+      days,
+      total_hours,
       (err) => {
-        if (err) return res.status(500).json({ message: "DB Error" });
-        res.json({ message: "Mode updated" });
+        if (err) return res.status(500).json({ message: "DB Error", error: err });
+        res.json({ message: "Mode updated successfully" });
       }
     );
-
   } else {
-    // INSERT
     ModeModel.saveMode(
-      user_id, bluetooth_name, start_time, end_time, run_time, stop_time, days, total_hours,
+      user_id,
+      bluetooth_name,
+      start_time_sql,
+      end_time_sql,
+      run_time,
+      stop_time,
+      days,
+      total_hours,
       (err, result) => {
-        if (err) return res.status(500).json({ message: "DB Error" });
-        res.json({ message: "Mode saved", id: result.insertId });
+        if (err) return res.status(500).json({ message: "DB Error", error: err });
+        res.json({ message: "Mode added successfully", id: result.insertId });
       }
     );
   }
 };
+
 
 exports.getModes = (req, res) => {
   const { user_id, bluetooth_name } = req.query;
