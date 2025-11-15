@@ -6,6 +6,8 @@ const User = require("../models/userModel");
 const Otp = require("../models/otpModel");
 const db = require("../config/db");
 const { sendOtpEmail } = require("../utils/mailer");
+const ModeModel = require('../models/userModel');
+
 
 /* -------------------------------
    Helper: Create user if not exists
