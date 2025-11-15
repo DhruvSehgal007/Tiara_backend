@@ -323,12 +323,14 @@ exports.saveMode = (req, res) => {
     total_hours
   } = req.body;
 
-  // Convert hours → TIME format
   const startSQL = `${String(start_time).padStart(2, '0')}:00:00`;
   const endSQL = `${String(end_time).padStart(2, '0')}:00:00`;
 
+  if (!user_id || !bluetooth_name) {
+    return res.status(400).json({ message: "Missing fields" });
+  }
+
   if (mode_id) {
-    // UPDATE
     ModeModel.updateMode(
       mode_id,
       startSQL,
@@ -342,11 +344,10 @@ exports.saveMode = (req, res) => {
           console.log("UPDATE ERROR:", err);
           return res.status(500).json({ error: err });
         }
-        res.json({ message: "Mode updated" });
+        res.json({ message: "Updated" });
       }
     );
   } else {
-    // INSERT
     ModeModel.saveMode(
       user_id,
       bluetooth_name,
@@ -361,7 +362,7 @@ exports.saveMode = (req, res) => {
           console.log("INSERT ERROR:", err);
           return res.status(500).json({ error: err });
         }
-        res.json({ message: "Mode added", mode_id: result.insertId });
+        res.json({ message: "Inserted", mode_id: result.insertId });
       }
     );
   }
@@ -374,12 +375,14 @@ exports.getModes = (req, res) => {
 
   ModeModel.getModes(user_id, bluetooth_name, (err, results) => {
     if (err) {
-      console.log("GET ERROR:", err);
+      console.log("GET MODES ERROR:", err);
       return res.status(500).json({ error: err });
     }
+
     res.json({ modes: results });
   });
 };
+
 
 
 
