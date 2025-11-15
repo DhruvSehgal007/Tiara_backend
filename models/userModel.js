@@ -146,6 +146,7 @@ exports.saveMode = (
   total_hours,
   callback
 ) => {
+
   const sql = `
     INSERT INTO mode_lists
     (user_id, bluetooth_device_name, start_time, end_time, run_time, stop_time, selected_days, total_hours, created_at)
@@ -168,6 +169,7 @@ exports.saveMode = (
   );
 };
 
+
 exports.updateMode = (
   id,
   start_time,
@@ -178,10 +180,11 @@ exports.updateMode = (
   total_hours,
   callback
 ) => {
+
   const sql = `
     UPDATE mode_lists
-    SET start_time = ?, end_time = ?, run_time = ?, stop_time = ?, selected_days = ?, total_hours = ?
-    WHERE id = ?
+    SET start_time=?, end_time=?, run_time=?, stop_time=?, selected_days=?, total_hours=?
+    WHERE id=?
   `;
 
   db.query(
@@ -199,12 +202,13 @@ exports.updateMode = (
   );
 };
 
-exports.getModes = (user_id, bluetooth_name, callback) => {
+exports.getModes = (user_id, bluetooth_device_name, callback) => {
   const sql = `
-    SELECT * FROM mode_lists
-    WHERE user_id=? AND bluetooth_name=?
+    SELECT *
+    FROM mode_lists
+    WHERE user_id = ? AND bluetooth_device_name = ?
     ORDER BY id DESC
   `;
-  db.query(sql, [user_id, bluetooth_name], callback);
+  db.query(sql, [user_id, bluetooth_device_name], callback);
 };
 

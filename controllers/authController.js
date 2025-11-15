@@ -311,56 +311,75 @@ exports.getDeviceMappings = (req, res) => {
 // };
 
 exports.saveMode = (req, res) => {
-  const { mode_id, user_id, bluetooth_name, start_time, end_time, run_time, stop_time, days, total_hours } = req.body;
+  const {
+    mode_id,
+    user_id,
+    bluetooth_name,
+    start_time,
+    end_time,
+    run_time,
+    stop_time,
+    days,
+    total_hours
+  } = req.body;
 
-  if (!user_id || !bluetooth_name) {
-    return res.status(400).json({ message: "Missing fields" });
-  }
-
-  // Convert numeric hours (e.g., 4) into TIME format (04:00:00)
-  const start_time_sql = `${String(start_time).padStart(2, '0')}:00:00`;
-  const end_time_sql = `${String(end_time).padStart(2, '0')}:00:00`;
+  // Convert hours → TIME format
+  const startSQL = `${String(start_time).padStart(2, '0')}:00:00`;
+  const endSQL = `${String(end_time).padStart(2, '0')}:00:00`;
 
   if (mode_id) {
+    // UPDATE
     ModeModel.updateMode(
       mode_id,
-      start_time_sql,
-      end_time_sql,
+      startSQL,
+      endSQL,
       run_time,
       stop_time,
       days,
       total_hours,
       (err) => {
-        if (err) return res.status(500).json({ message: "DB Error", error: err });
-        res.json({ message: "Mode updated successfully" });
+        if (err) {
+          console.log("UPDATE ERROR:", err);
+          return res.status(500).json({ error: err });
+        }
+        res.json({ message: "Mode updated" });
       }
     );
   } else {
+    // INSERT
     ModeModel.saveMode(
       user_id,
       bluetooth_name,
-      start_time_sql,
-      end_time_sql,
+      startSQL,
+      endSQL,
       run_time,
       stop_time,
       days,
       total_hours,
       (err, result) => {
-        if (err) return res.status(500).json({ message: "DB Error", error: err });
-        res.json({ message: "Mode added successfully", id: result.insertId });
+        if (err) {
+          console.log("INSERT ERROR:", err);
+          return res.status(500).json({ error: err });
+        }
+        res.json({ message: "Mode added", mode_id: result.insertId });
       }
     );
   }
 };
+
 
 
 exports.getModes = (req, res) => {
   const { user_id, bluetooth_name } = req.query;
 
   ModeModel.getModes(user_id, bluetooth_name, (err, results) => {
-    if (err) return res.status(500).json({ message: "DB Error" });
+    if (err) {
+      console.log("GET ERROR:", err);
+      return res.status(500).json({ error: err });
+    }
     res.json({ modes: results });
   });
 };
+
 
 
