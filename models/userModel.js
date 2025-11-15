@@ -154,21 +154,17 @@ exports.saveMode = (
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
   `;
 
-  db.query(
-    sql,
-    [
-      user_id,
-      bluetooth_device_name,
-      room_name,        // ⭐ MUST BE HERE ⭐
-      start_time,       // e.g. "04:00:00"
-      end_time,         // e.g. "09:00:00"
-      run_time,
-      stop_time,
-      selected_days,
-      total_hours
-    ],
-    callback
-  );
+  db.query(sql, [
+    user_id,
+    bluetooth_device_name,
+    room_name,
+    start_time,
+    end_time,
+    run_time,
+    stop_time,
+    selected_days,
+    total_hours
+  ], callback);
 };
 
 
