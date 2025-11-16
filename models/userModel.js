@@ -219,7 +219,7 @@ exports.toggleMode = (id, user_id, bluetooth_name, callback) => {
     WHERE user_id = ? AND bluetooth_device_name = ?
   `;
 
-  // Step 2: Activate selected mode changes
+  // Step 2: Activate selected mode
   const sql2 = `
     UPDATE mode_lists 
     SET is_active = 1 
