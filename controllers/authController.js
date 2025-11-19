@@ -83,37 +83,6 @@ exports.setPasswordAfterVerification = (req, res) => {
   });
 };
 
-/* -------------------------------
-   Step 3: Login
---------------------------------- */
-// exports.login = (req, res) => {
-//   // const { name, password } = req.body;
-//     const { name, password } = req.body;
-
-
-//   User.findUserByEmail(name, (err, result) => {
-//     if (err || result.length === 0) {
-//       return res.status(400).json({ message: "Invalid email or password" });
-//     }
-
-//     const user = result[0];
-
-//     if (!user.password || user.is_verified === 0) {
-//       return res.status(401).json({ message: "Please verify your email first" });
-//     }
-
-//     const isMatch = bcrypt.compareSync(password, user.password);
-//     if (!isMatch) {
-//       return res.status(400).json({ message: "Invalid email or password" });
-//     }
-
-//     const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, {
-//       expiresIn: "1h",
-//     });
-
-//     res.json({ message: "Login successful", token });
-//   });
-// };
 exports.login = (req, res) => {
   const { email, password } = req.body; // ✅ correct: use email, not name hello
 
@@ -156,25 +125,6 @@ exports.login = (req, res) => {
   });
 };
 
-/* -------------------------------
-   Step 4: Save Device ↔ Room Mapping
---------------------------------- */
-
-// exports.saveDeviceRoomMapping = (req, res) => {
-//   const { email, bluetooth_device_name, room_name } = req.body;
-
-//   if (!email || !bluetooth_device_name || !room_name) {
-//     return res.status(400).json({ message: 'Missing required fields' });
-//   }
-
-//   User.saveDeviceRoomMapping(email, bluetooth_device_name, room_name, (err, result) => {
-//     if (err) {
-//       return res.status(500).json({ message: 'Database error' });
-//     }
-
-//     res.json({ message: '✅ Mapping saved successfully', data: result });
-//   });
-// };
 
 exports.saveDeviceRoomMapping = (req, res) => {
   const { email, bluetooth_device_name, room_name } = req.body;
@@ -193,67 +143,7 @@ exports.saveDeviceRoomMapping = (req, res) => {
   });
 };
 
-/* -------------------------------
-   Step 5: Get All Mappings by Email
---------------------------------- */
-// exports.getDeviceMappings = (req, res) => {
-//   const { email } = req.query;
 
-//   if (!email) {
-//     return res.status(400).json({ message: "Email required" });
-//   }
-
-//   db.query("SELECT * FROM device_mappings WHERE user_email = ?", [email], (err, results) => {
-//     if (err) {
-//       console.error("❌ Error fetching mappings:", err);
-//       return res.status(500).json({ message: "Database error" });
-//     }
-
-//     res.json({ mappings: results });
-//   });
-// };
-
-
-
-
-
-// // exports.getUserDeviceMappings = (email, callback) => {
-// //   const sql = `
-// //     SELECT user_id, user_email, bluetooth_device_name, room_name, created_at
-// //     FROM device_mappings
-// //     WHERE user_email = ?
-// //   `;
-
-// //   db.query(sql, [email], (err, result) => {
-// //     if (err) {
-// //       console.error("❌ Error fetching mappings:", err);
-// //       return callback(err, null);
-// //     }
-// //     callback(null, result);
-// //   });
-// // };
-
-
-
-
-// exports.getDeviceMappings = (req, res) => {
-//   const { email } = req.query;
-
-//   if (!email) {
-//     return res.status(400).json({ message: "Email is required" });
-//   }
-
-//   User.getUserDeviceMappings(email, (err, result) => {
-//     if (err) {
-//       return res.status(500).json({ message: "Database error" });
-//     }
-
-//     res.json({
-//       message: "✅ Device mappings fetched", again change
-//       data: result,
-//     });
-//   });
-// };
 
 exports.getDeviceMappings = (req, res) => {
   const { email } = req.query;
@@ -275,42 +165,6 @@ exports.getDeviceMappings = (req, res) => {
 };
 
 
-
-
-
-
-// exports.saveMode = (req, res) => {
-//   const { user_id, bluetooth_name, start_time, end_time, run_time, stop_time, days, total_hours } = req.body;
-
-//   if (!user_id || !bluetooth_name) {
-//     return res.status(400).json({ message: "Missing fields" });
-//   }
-
-//   ModeModel.saveMode(
-//     user_id,
-//     bluetooth_name,
-//     start_time,
-//     end_time,
-//     run_time,
-//     stop_time,
-//     days,
-//     total_hours,
-//     (err, result) => {
-//       if (err) return res.status(500).json({ message: "Database error" });
-
-//       res.json({ message: "Mode saved successfully", mode_id: result.insertId });
-//     }
-//   );
-// };
-
-// exports.getModes = (req, res) => {
-//   const { user_id, bluetooth_name } = req.query;
-
-//   ModeModel.getModes(user_id, bluetooth_name, (err, results) => {
-//     if (err) return res.status(500).json({ message: "DB Error" });
-//     res.json({ modes: results });
-//   });
-// };
 
 exports.saveMode = (req, res) => {
   const {
