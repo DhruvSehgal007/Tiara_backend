@@ -1,7 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
-const session = require("express-session");
+// const session = require("express-session");
 const authRoutes = require("./routes/authRoutes");
 
 dotenv.config();
@@ -23,12 +23,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // ✅ Session (optional)
-app.use(session({
-  secret: process.env.SESSION_SECRET || "default_secret",
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: false }
-}));
+// app.use(session({
+//   secret: process.env.SESSION_SECRET || "default_secret",
+//   resave: false,
+//   saveUninitialized: true,
+//   cookie: { secure: false }
+// }));
 
 // ✅ Routes
 app.use("/api", authRoutes);

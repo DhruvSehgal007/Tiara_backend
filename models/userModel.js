@@ -8,7 +8,9 @@ exports.findUserByEmail = (email, cb) => {
   db.query("SELECT * FROM users WHERE email = ?", [email], cb);
 };
 
-
+exports.getUser = (id , cb)=>{
+  db.query("SELECT * FROM users WHERE id = ?", [id], cb);
+}
 exports.createUser = (userData, cb) => {
   db.query("INSERT INTO users SET ?", userData, cb);
 };

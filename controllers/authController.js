@@ -120,11 +120,29 @@ exports.login = (req, res) => {
     res.json({
       message: "Login successful",
       token,
-      email: user.email,
     });
   });
 };
 
+exports.getUserDetails = (req, res) => {
+    const { user_id } = req.body;
+    console.log("Received user_id:", user_id);
+
+    User.getUser(user_id, (err, result) => {
+        console.log("DB result:", result);   // add this
+
+        if (err) {
+            console.error("Database error:", err);
+            return res.status(500).json({ message: "Server error. Please try again." });
+        }
+
+        if (result.length > 0) {
+            return res.json({ message: "User Details Successfully fetched", data: result });
+        }
+
+        return res.json({ message: "User not found", data: [] });
+    });
+},
 
 exports.saveDeviceRoomMapping = (req, res) => {
   const { email, bluetooth_device_name, room_name } = req.body;
@@ -142,8 +160,6 @@ exports.saveDeviceRoomMapping = (req, res) => {
     res.json({ message: "Mapping saved successfully", data: result });
   });
 };
-
-
 
 exports.getDeviceMappings = (req, res) => {
   const { email } = req.query;
@@ -163,8 +179,6 @@ exports.getDeviceMappings = (req, res) => {
     });
   });
 };
-
-
 
 exports.saveMode = (req, res) => {
   const {
@@ -216,9 +230,6 @@ exports.saveMode = (req, res) => {
   }
 };
 
-
-
-
 exports.getModes = (req, res) => {
   const { user_id, bluetooth_name } = req.query;
 
@@ -231,8 +242,6 @@ exports.getModes = (req, res) => {
     res.json({ modes: results });
   });
 };
-
-
 
 exports.toggleMode = (req, res) => {
   const { id, user_id, bluetooth_name } = req.body;

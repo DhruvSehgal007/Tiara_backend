@@ -16,6 +16,7 @@ const authController = require("../controllers/authController");
 router.post("/signup", authController.signupStepOne);
 router.post("/verify", authController.setPasswordAfterVerification);
 router.post("/login", authController.login);
+router.post("/getuserdetail", authController.getUserDetails);
 router.post("/save-mapping", authController.saveDeviceRoomMapping);
 router.get("/get-mappings", authController.getDeviceMappings);
 router.post('/save-mode', authController.saveMode);
