@@ -17,20 +17,7 @@ exports.setPasswordAndVerify = (email, hashedPassword, cb) => {
   db.query("UPDATE users SET password = ?, is_verified = 1 WHERE email = ?", [hashedPassword, email], cb);
 };
 
-// exports.saveDeviceRoomMapping = (email, bluetooth_device_name, room_name, callback) => {
-//   const sql = `
-//     INSERT INTO device_mappings (user_email, bluetooth_device_name, room_name)
-//     VALUES (?, ?, ?)
-//   `;
 
-//   db.query(sql, [email, bluetooth_device_name, room_name], (err, result) => {
-//     if (err) {
-//       console.error('❌ Error saving mapping:', err);
-//       return callback(err, null);
-//     }
-//     callback(null, result);
-//   });
-// };
 exports.saveDeviceRoomMapping = (email, bluetooth_device_name, room_name, callback) => {
   // Step 1: Get user_id from users table by email
   const findUserSql = "SELECT id FROM users WHERE email = ?";
@@ -64,21 +51,7 @@ exports.saveDeviceRoomMapping = (email, bluetooth_device_name, room_name, callba
 
 
 
-// exports.getUserDeviceMappings = (email, callback) => {
-//   const sql = `
-//     SELECT user_id, user_email, bluetooth_device_name, room_name, created_at
-//     FROM device_mappings
-//     WHERE user_email = ?
-//   `;
 
-//   db.query(sql, [email], (err, result) => {
-//     if (err) {
-//       console.error("❌ Error fetching mappings:", err);
-//       return callback(err, null);
-//     }
-//     callback(null, result);
-//   });
-// };
 exports.getUserDeviceMappings = (email, callback) => {
   const sql = `
     SELECT 
@@ -101,40 +74,6 @@ exports.getUserDeviceMappings = (email, callback) => {
 };
 
 
-// exports.saveMode = (
-//   user_id,
-//   bluetooth_name,
-//   start_time,
-//   end_time,
-//   run_time,
-//   stop_time,
-//   days,
-//   total_hours,
-//   callback
-// ) => {
-//   const sql = `
-//       INSERT INTO mode_lists 
-//       (user_id, bluetooth_name, start_time, end_time, run_time, stop_time, days, total_hours, created_at)
-//       VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())
-//   `;
-
-//   db.query(
-//     sql,
-//     [user_id, bluetooth_name, start_time, end_time, run_time, stop_time, days, total_hours],
-//     callback
-//   );
-// };
-
-// exports.getModes = (user_id, bluetooth_name, callback) => {
-//   const sql = `
-//     SELECT * 
-//     FROM mode_lists
-//     WHERE user_id = ? AND bluetooth_name = ?
-//     ORDER BY id DESC
-//   `;
-
-//   db.query(sql, [user_id, bluetooth_name], callback);
-// };
 exports.saveMode = (
   user_id,
   bluetooth_device_name,
