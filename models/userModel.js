@@ -175,3 +175,17 @@ exports.toggleMode = (id, user_id, bluetooth_name, callback) => {
 };
 
 
+
+
+const saveUserData = (user_id, first_name, last_name, phone, email, callback) => {
+    const query = `
+        INSERT INTO user_data (user_id, first_name, last_name, phone, email) 
+        VALUES (?, ?, ?, ?, ?)
+    `;
+    db.query(query, [user_id, first_name, last_name, phone, email], (err, result) => {
+        if (err) {
+            return callback(err, null);
+        }
+        callback(null, result);
+    });
+};

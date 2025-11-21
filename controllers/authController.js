@@ -261,3 +261,23 @@ exports.toggleMode = (req, res) => {
 
 
 
+
+exports.saveUserProfile = (req, res) => {
+    const { user_id, first_name, last_name, phone, email } = req.body;
+
+    console.log("Received data:", req.body);
+
+    // Ensure that all fields are provided
+    if (!user_id || !first_name || !last_name || !phone || !email) {
+        return res.status(400).json({ message: "All fields are required." });
+    }
+
+    User.saveUserData(user_id, first_name, last_name, phone, email, (err, result) => {
+        if (err) {
+            console.error("Database error:", err);
+            return res.status(500).json({ message: "Server error. Please try again." });
+        }
+
+        return res.json({ message: "Profile saved successfully", data: result });
+    });
+};

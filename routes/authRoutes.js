@@ -22,6 +22,8 @@ router.get("/get-mappings", authController.getDeviceMappings);
 router.post('/save-mode', authController.saveMode);
 router.get('/get-modes', authController.getModes);
 router.post('/toggle-mode', authController.toggleMode);
+router.post('/saveuserprofile', authController.saveUserProfile);
+
 
 
 module.exports = router;
