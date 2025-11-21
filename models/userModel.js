@@ -189,3 +189,8 @@ const saveUserData = (user_id, first_name, last_name, phone, email, callback) =>
         callback(null, result);
     });
 };
+
+// Export the function so it can be used in the controller
+module.exports = {
+    saveUserData
+};
