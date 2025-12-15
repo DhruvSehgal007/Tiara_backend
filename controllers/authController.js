@@ -268,7 +268,7 @@ exports.saveUserProfile = (req, res) => {
     // Log data to check what is being received
     console.log("Received data:", req.body);
 
-    // Call the saveUserData function from the ModeModel
+    // Call the saveUserData function from the ModeModel huhuh
     ModeModel.saveUserData(user_id, first_name, last_name, phone, email, (err, result) => {
         if (err) {
             console.error("Database error:", err);
