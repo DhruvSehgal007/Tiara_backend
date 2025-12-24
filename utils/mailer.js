@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 
-console.log("✅ Setting up SMTP transporter...");
+console.log("✅ Setting up SMTP transporter... +1111");
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",

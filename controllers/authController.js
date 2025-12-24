@@ -61,6 +61,38 @@ exports.signupStepOne = async (req, res) => {
     });
   });
 };
+exports.signup = (req, res) => {
+  const { name, email } = req.body;
+
+  if (!name || !email) {
+    return res.status(400).json({
+      success: false,
+      message: 'Name and email are required'
+    });
+  }
+
+  createUserIfNotExists(name, email, (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({
+        success: false,
+        message: 'Signup failed'
+      });
+    }
+
+    if (result.created) {
+      return res.status(200).json({
+        success: true,
+        message: 'User created successfully'
+      });
+    } else {
+      return res.status(200).json({
+        success: false,
+        message: 'User already exists'
+      });
+    }
+  });
+};
 
 /* -------------------------------
    Step 2: Verify OTP & Set Password
